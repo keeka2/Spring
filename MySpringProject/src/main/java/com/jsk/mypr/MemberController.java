@@ -1,0 +1,67 @@
+package com.jsk.mypr;
+
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import mybatis.dao.MemDAO;
+import mybatis.vo.MemVO;
+
+@Controller
+public class MemberController {
+	@Autowired
+	private MemDAO m_dao;
+	
+	@Autowired
+	private HttpSession session;//자동으로 저장된다.
+	
+	@RequestMapping("/login") //GET방식 호출 시 
+	public String login() {
+		return "login";
+	}
+	
+	//같은 요청이여도  POST이면 id,pw 확인 후 세션에 값 저장
+	@RequestMapping(value="/login", method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String, String> login(String m_id, String m_pw){
+		
+		Map<String, String> map = new Hashtable<String, String>();
+		
+		// 인자 두개를 MemDAO의 login함수를 호출하면서 전달하면 정확한 정보일 때만
+		// MemVO 한개를 받게 된다.
+		MemVO mvo = m_dao.login(m_id, m_pw);
+		
+		//mvo가 null이면 아이디 및 비밀번호를 잘 못 입력한 경우! 그렇지 않으면 잘 입력한 경우!
+		if(mvo != null) {
+			//세션에 mvo라는 이름으로 mvo를 저장한다.
+			session.setAttribute("mvo", mvo);
+			map.put("res", "1");
+			map.put("m_name", mvo.getM_name());
+		}else
+			map.put("res", "0");
+		
+		return map;
+	}
+	
+	@RequestMapping("/logout")
+	@ResponseBody
+	public Map<String, String> logout() {
+		session.removeAttribute("mvo");
+		
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("res", "0");
+		
+		return map;
+	}
+	
+	
+
+}

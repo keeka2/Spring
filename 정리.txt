@@ -52,3 +52,12 @@ servlet-context.xml
 <!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
 DispatcherServlet Context : 이 서블릿의 요청처리 인프라를 정의
  View 지원 bean을 설정
+
+
+
+의존성 역전(IoC)
+- interface에 맞춰서 구현된 인스턴스를 갈아 끼우면 되므로 코드가 유연해 지고 
+  가독성이 높아질 뿐만아니라 코드의 중복이 필연적으로 제거
+- Spring에선 컨테이너(Container)라는 곳에서 Bean이라는 인스턴스 형태로 관리
+
+
